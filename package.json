@@ -1,0 +1,49 @@
+{
+  "name": "@pgns/core",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for the pgns webhook relay API",
+  "type": "module",
+  "license": "MIT",
+  "author": "pgns",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pgns-io/sdk-js.git"
+  },
+  "homepage": "https://pgns.io",
+  "keywords": [
+    "webhooks",
+    "pgns",
+    "sdk",
+    "typescript",
+    "api-client"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.map"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  }
+}
