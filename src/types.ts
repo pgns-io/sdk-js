@@ -22,41 +22,12 @@ export const AuthTokensSchema = z.object({
 });
 export type AuthTokens = z.infer<typeof AuthTokensSchema>;
 
-/** Body for `POST /v1/auth/signup`. */
-export const SignupRequestSchema = z.object({
-  email: z.string(),
-  password: z.string(),
-  name: z.string().optional(),
-  tos_accepted: z.boolean(),
-});
-export type SignupRequest = z.infer<typeof SignupRequestSchema>;
-
-/** Body for `POST /v1/auth/login`. */
-export const LoginRequestSchema = z.object({
-  email: z.string(),
-  password: z.string(),
-});
-export type LoginRequest = z.infer<typeof LoginRequestSchema>;
-
-/** Body for `POST /v1/auth/magic-link`. */
-export const MagicLinkRequestSchema = z.object({
-  email: z.string(),
-});
-export type MagicLinkRequest = z.infer<typeof MagicLinkRequestSchema>;
-
-/** Body for `POST /v1/auth/magic-link/verify`. */
-export const MagicLinkVerifyRequestSchema = z.object({
-  token: z.string(),
-});
-export type MagicLinkVerifyRequest = z.infer<typeof MagicLinkVerifyRequestSchema>;
-
 /** An authenticated user account. */
 export const UserSchema = z.object({
   id: z.string(),
   email: z.string(),
   name: z.string(),
   plan: z.string(),
-  tos_accepted_at: z.string().nullable(),
   created_at: z.string(),
   updated_at: z.string(),
 });
@@ -85,7 +56,6 @@ export const PigeonSchema = z.object({
   body_json: z.unknown().nullable(),
   body_raw: z.array(z.number()).nullable(),
   request_query: z.record(z.string(), z.unknown()).nullable(),
-  filtered: z.boolean(),
   replayed_from: z.string().nullable(),
   delivery_status: DeliveryStatusSchema,
   received_at: z.string(),
@@ -201,17 +171,6 @@ export const ReplayResponseSchema = z.object({
 });
 export type ReplayResponse = z.infer<typeof ReplayResponseSchema>;
 
-/** Aggregated stats for the dashboard overview. */
-export const DashboardStatsSchema = z.object({
-  total_roosts: z.number(),
-  active_roosts: z.number(),
-  total_pigeons: z.number(),
-  pigeons_today: z.number(),
-  delivered: z.number(),
-  failed: z.number(),
-});
-export type DashboardStats = z.infer<typeof DashboardStatsSchema>;
-
 /** A reusable template for formatting webhook payloads. */
 export const TemplateSchema = z.object({
   id: z.string(),
@@ -266,51 +225,6 @@ export type PaginatedPigeons = z.infer<typeof PaginatedPigeonsSchema>;
 
 export const PaginatedDeliveryAttemptsSchema = PaginatedResponseSchema(DeliveryAttemptSchema);
 export type PaginatedDeliveryAttempts = z.infer<typeof PaginatedDeliveryAttemptsSchema>;
-
-// ---------------------------------------------------------------------------
-// Billing
-// ---------------------------------------------------------------------------
-
-export const BillingLimitsSchema = z.object({
-  pigeons_per_month: z.number(),
-  max_roosts: z.number(),
-  api_per_minute: z.number(),
-  inbound_per_second: z.number(),
-  email_per_month: z.number(),
-});
-export type BillingLimits = z.infer<typeof BillingLimitsSchema>;
-
-export const BillingStatusSchema = z.object({
-  plan: z.string(),
-  subscription_status: z.string(),
-  billing_period_start: z.string().nullable(),
-  billing_period_end: z.string().nullable(),
-  usage_count: z.number(),
-  limits: BillingLimitsSchema,
-});
-export type BillingStatus = z.infer<typeof BillingStatusSchema>;
-
-export const CheckoutRequestSchema = z.object({
-  price_id: z.string(),
-  success_url: z.string(),
-  cancel_url: z.string(),
-});
-export type CheckoutRequest = z.infer<typeof CheckoutRequestSchema>;
-
-export const CheckoutResponseSchema = z.object({
-  checkout_url: z.string(),
-});
-export type CheckoutResponse = z.infer<typeof CheckoutResponseSchema>;
-
-export const PortalRequestSchema = z.object({
-  return_url: z.string(),
-});
-export type PortalRequest = z.infer<typeof PortalRequestSchema>;
-
-export const PortalResponseSchema = z.object({
-  portal_url: z.string(),
-});
-export type PortalResponse = z.infer<typeof PortalResponseSchema>;
 
 /** Error body returned by the API on non-2xx responses. */
 export const ApiErrorSchema = z.object({

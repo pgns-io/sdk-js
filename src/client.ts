@@ -9,13 +9,9 @@ import type {
   CreateRoost,
   DeliveryAttempt,
   Destination,
-  LoginRequest,
-  MagicLinkRequest,
-  MagicLinkVerifyRequest,
   Pigeon,
   ReplayResponse,
   Roost,
-  SignupRequest,
   UpdateApiKeyRequest,
   UpdateRoost,
 } from './types.js';
@@ -37,7 +33,7 @@ export interface PigeonsClientConfig {
  *
  * Supports two authentication modes:
  * - **API key** — pass `apiKey` in the constructor for server-side usage.
- * - **JWT** — call {@link login} / {@link signup}, or pass `accessToken`.
+ * - **JWT** — pass `accessToken` directly.
  *   Expired tokens are refreshed automatically on `401`.
  *
  * @example
@@ -153,47 +149,6 @@ export class PigeonsClient {
   }
 
   // -- Auth --
-
-  /** Create a new account. Stores the returned tokens on the client. */
-  async signup(data: SignupRequest): Promise<AuthTokens> {
-    const tokens = await this.unauthRequest<AuthTokens>('/v1/auth/signup', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-    this.accessToken = tokens.access_token;
-    this.onTokenRefresh?.(tokens);
-    return tokens;
-  }
-
-  /** Authenticate with email and password. Stores the returned tokens on the client. */
-  async login(data: LoginRequest): Promise<AuthTokens> {
-    const tokens = await this.unauthRequest<AuthTokens>('/v1/auth/login', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-    this.accessToken = tokens.access_token;
-    this.onTokenRefresh?.(tokens);
-    return tokens;
-  }
-
-  /** Send a magic-link email to the given address. */
-  async requestMagicLink(data: MagicLinkRequest): Promise<{ message: string }> {
-    return this.unauthRequest<{ message: string }>('/v1/auth/magic-link', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  /** Exchange a magic-link token for auth tokens. Stores the returned tokens on the client. */
-  async verifyMagicLink(data: MagicLinkVerifyRequest): Promise<AuthTokens> {
-    const tokens = await this.unauthRequest<AuthTokens>('/v1/auth/magic-link/verify', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-    this.accessToken = tokens.access_token;
-    this.onTokenRefresh?.(tokens);
-    return tokens;
-  }
 
   /** Refresh the access token. The refresh token is sent via httpOnly cookie. */
   async refresh(): Promise<AuthTokens> {
