@@ -1,6 +1,6 @@
 {
   "name": "@pgns/sdk",
-  "version": "0.1.3",
+  "version": "0.3.0",
   "description": "TypeScript SDK for the pgns webhook relay API",
   "type": "module",
   "license": "MIT",
