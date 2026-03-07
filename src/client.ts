@@ -80,7 +80,7 @@ export class PigeonsClient {
   private async handleResponse<T>(res: Response): Promise<T> {
     if (!res.ok) {
       const body = (await res.json().catch(() => ({ error: res.statusText }))) as ApiError;
-      throw new PigeonsError(body.error, res.status);
+      throw new PigeonsError(body.error, res.status, { code: body.code });
     }
     if (res.status === 204) return undefined as unknown as T;
     return res.json() as Promise<T>;
@@ -129,7 +129,7 @@ export class PigeonsClient {
         return this.handleResponse<T>(retryRes);
       } catch (err) {
         this.accessToken = undefined;
-        throw new PigeonsError('Session expired', 401, err);
+        throw new PigeonsError('Session expired', 401, { cause: err, code: 'UNAUTHORIZED' });
       }
     }
 

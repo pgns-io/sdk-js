@@ -11,6 +11,7 @@ export const DeliveryStatusSchema = z.enum([
   'delivered',
   'failed',
   'retrying',
+  'filtered',
 ]);
 export type DeliveryStatus = z.infer<typeof DeliveryStatusSchema>;
 
@@ -33,12 +34,27 @@ export const UserSchema = z.object({
 });
 export type User = z.infer<typeof UserSchema>;
 
+/** Known webhook source types for provider-specific signature verification. */
+export const SourceTypeSchema = z.enum([
+  'github',
+  'stripe',
+  'shopify',
+  'slack',
+  'discord',
+  'svix',
+  'pigeon',
+  'linear',
+  'sentry',
+]);
+export type SourceType = z.infer<typeof SourceTypeSchema>;
+
 /** A roost — a webhook endpoint that captures incoming requests. */
 export const RoostSchema = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string(),
   secret: z.string().nullable(),
+  source_type: SourceTypeSchema.nullable(),
   is_active: z.boolean(),
   created_at: z.string(),
   updated_at: z.string(),
@@ -74,6 +90,7 @@ export const DestinationSchema = z.object({
   retry_delay_ms: z.number(),
   retry_multiplier: z.number(),
   is_paused: z.boolean(),
+  is_verified: z.boolean(),
   created_at: z.string(),
   updated_at: z.string(),
 });
@@ -88,6 +105,7 @@ export const DeliveryAttemptSchema = z.object({
   attempt_number: z.number(),
   response_status: z.number().nullable(),
   response_body: z.string().nullable(),
+  response_headers: z.record(z.string(), z.string()).nullable().optional(),
   error_message: z.string().nullable(),
   attempted_at: z.string(),
   next_retry_at: z.string().nullable(),
@@ -120,6 +138,7 @@ export const CreateRoostSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
   secret: z.string().optional(),
+  source_type: SourceTypeSchema.optional(),
 });
 export type CreateRoost = z.infer<typeof CreateRoostSchema>;
 
@@ -128,6 +147,7 @@ export const UpdateRoostSchema = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
   secret: z.string().optional(),
+  source_type: SourceTypeSchema.optional(),
   is_active: z.boolean().optional(),
 });
 export type UpdateRoost = z.infer<typeof UpdateRoostSchema>;
@@ -230,5 +250,6 @@ export type PaginatedDeliveryAttempts = z.infer<typeof PaginatedDeliveryAttempts
 export const ApiErrorSchema = z.object({
   error: z.string(),
   status: z.number(),
+  code: z.string().optional(),
 });
 export type ApiError = z.infer<typeof ApiErrorSchema>;

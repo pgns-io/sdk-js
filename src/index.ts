@@ -1,6 +1,9 @@
 export { PigeonsClient } from './client.js';
 export type { PigeonsClientConfig } from './client.js';
-export { PigeonsError } from './errors.js';
+export { PigeonsError, WebhookVerificationError } from './errors.js';
+export type { WebhookVerificationCode } from './errors.js';
+export { Webhook } from './webhook.js';
+export type { WebhookOptions } from './webhook.js';
 export { createEventSource } from './events.js';
 export type { EventSourceOptions } from './events.js';
 
