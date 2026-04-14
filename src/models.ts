@@ -18,24 +18,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-export { PigeonsClient } from './client.js';
-export type { PigeonsClientConfig } from './client.js';
-export { PigeonsError, WebhookVerificationError } from './errors.js';
-export type { WebhookVerificationCode } from './errors.js';
-export { Webhook } from './webhook.js';
-export type { WebhookOptions } from './webhook.js';
-export { createEventSource } from './events.js';
-export type { EventSourceOptions } from './events.js';
-
-// -- Agent helpers --
-export {
-  CORRELATION_ID_HEADER,
-  correlationHeaders,
-  extractCorrelationId,
-  validateCorrelationId,
-} from './agents.js';
-
-// -- Schemas (Zod) --
 export {
   AgentCardSchema,
   ApiErrorSchema,
@@ -58,12 +40,12 @@ export {
   PaginatedPigeonsSchema,
   PaginatedResponseSchema,
   PigeonSchema,
-  PublishPigeonResponseSchema,
   PreviewTemplateRequestSchema,
   PreviewTemplateResponseSchema,
   ReplayResponseSchema,
   RoostHealthSchema,
   RoostSchema,
+  SourceTypeSchema,
   TemplateSchema,
   UpdateAgentCardSchema,
   UpdateApiKeyRequestSchema,
@@ -73,7 +55,6 @@ export {
   UserSchema,
 } from './types.js';
 
-// -- Types (inferred from schemas) --
 export type {
   AgentCard,
   ApiError,
@@ -95,12 +76,12 @@ export type {
   PaginatedDeliveryAttempts,
   PaginatedPigeons,
   Pigeon,
-  PublishPigeonResponse,
   PreviewTemplateRequest,
   PreviewTemplateResponse,
   ReplayResponse,
   Roost,
   RoostHealth,
+  SourceType,
   Template,
   UpdateAgentCard,
   UpdateApiKeyRequest,

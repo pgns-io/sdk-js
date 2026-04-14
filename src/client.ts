@@ -1,17 +1,43 @@
+// Copyright (c) 2026 PGNS LLC
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 import { PigeonsError } from './errors.js';
 import type {
+  AgentCard,
   ApiError,
   ApiKeyCreatedResponse,
   ApiKeyResponse,
   AuthTokens,
+  CreateAgentCard,
   CreateApiKeyRequest,
   CreateDestination,
   CreateRoost,
   DeliveryAttempt,
   Destination,
+  HealthThresholds,
   Pigeon,
+  PublishPigeonResponse,
   ReplayResponse,
   Roost,
+  RoostHealth,
+  UpdateAgentCard,
   UpdateApiKeyRequest,
   UpdateRoost,
 } from './types.js';
@@ -234,6 +260,19 @@ export class PigeonsClient {
     });
   }
 
+  /** Publish a pigeon (JSON payload) to a roost's inbound endpoint. */
+  publishPigeon(
+    roostId: string,
+    payload: unknown,
+    opts?: { headers?: Record<string, string> },
+  ): Promise<PublishPigeonResponse> {
+    return this.request<PublishPigeonResponse>(`/r/${encodeURIComponent(roostId)}`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: opts?.headers,
+    });
+  }
+
   // -- Destinations --
 
   /** List all destinations for a roost. */
@@ -305,5 +344,63 @@ export class PigeonsClient {
     return this.request<void>(`/v1/api-keys/${encodeURIComponent(keyId)}`, {
       method: 'DELETE',
     });
+  }
+
+  // -- Agent Cards --
+
+  /** List all agent cards for the authenticated user. */
+  listAgents(): Promise<AgentCard[]> {
+    return this.request<AgentCard[]>('/v1/agents');
+  }
+
+  /** Create a new agent card. */
+  createAgent(data: CreateAgentCard): Promise<AgentCard> {
+    return this.request<AgentCard>('/v1/agents', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  /** Get an agent card by ID. */
+  getAgent(agentId: string): Promise<AgentCard> {
+    return this.request<AgentCard>(`/v1/agents/${encodeURIComponent(agentId)}`);
+  }
+
+  /** Update an agent card. */
+  updateAgent(agentId: string, data: UpdateAgentCard): Promise<AgentCard> {
+    return this.request<AgentCard>(`/v1/agents/${encodeURIComponent(agentId)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
+  /** Delete an agent card. */
+  deleteAgent(agentId: string): Promise<void> {
+    return this.request<void>(`/v1/agents/${encodeURIComponent(agentId)}`, { method: 'DELETE' });
+  }
+
+  // -- Health --
+
+  /** Get health metrics for a roost over the last 7-day window. */
+  getRoostHealth(roostId: string): Promise<RoostHealth> {
+    return this.request<RoostHealth>(`/v1/roosts/${encodeURIComponent(roostId)}/health`);
+  }
+
+  /** Get the health thresholds configured for a roost. */
+  getHealthThresholds(roostId: string): Promise<HealthThresholds> {
+    return this.request<HealthThresholds>(
+      `/v1/roosts/${encodeURIComponent(roostId)}/health-thresholds`,
+    );
+  }
+
+  /** Set custom health thresholds for a roost. */
+  setHealthThresholds(roostId: string, data: HealthThresholds): Promise<HealthThresholds> {
+    return this.request<HealthThresholds>(
+      `/v1/roosts/${encodeURIComponent(roostId)}/health-thresholds`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      },
+    );
   }
 }
